@@ -1,6 +1,5 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
+import 'package:muqaddama/core/config/routes/route_names.dart';
 import 'package:muqaddama/core/constants/app_assets.dart';
 import 'package:muqaddama/core/constants/app_colors.dart';
 
@@ -96,7 +95,7 @@ class _OnboardingViewState extends State<OnboardingView> {
 
               // ---- active page indicator
               Padding(
-                padding: const EdgeInsets.fromLTRB(0, 0, 0, 70),
+                padding: const EdgeInsets.only(bottom: 28),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: List.generate(onboardingViewData.length, (index) {
@@ -108,11 +107,64 @@ class _OnboardingViewState extends State<OnboardingView> {
                       height: 15,
                       decoration: BoxDecoration(
                         color: isActive ? AppColors.bgBlack : AppColors.bgWhite,
-                        boxShadow: isActive ? [] : [BoxShadow(color: AppColors.boxShadowColor, blurRadius: 10, spreadRadius: 2, offset: Offset(0, 2))],
-                        shape: BoxShape.circle
+                        boxShadow: isActive
+                            ? []
+                            : [
+                                BoxShadow(
+                                  color: AppColors.boxShadowColor,
+                                  blurRadius: 10,
+                                  spreadRadius: 2,
+                                  offset: Offset(0, 2),
+                                ),
+                              ],
+                        shape: BoxShape.circle,
                       ),
                     );
                   }),
+                ),
+              ),
+
+              // ---- Button for next/start
+              Padding(
+                padding: EdgeInsets.fromLTRB(20, 0, 20, 20),
+                child: OutlinedButton(
+                  onPressed: () {
+                    _currentPage < onboardingViewData.length - 1
+                        ? _pageController.nextPage(
+                            duration: const Duration(milliseconds: 400),
+                            curve: Curves.easeInOut,
+                          )
+                        : Navigator.pushReplacementNamed(
+                            context,
+                            RouteNames.loginView,
+                          );
+                  },
+                  style: OutlinedButton.styleFrom(
+                    backgroundColor: AppColors.bgBlack,
+                    foregroundColor: AppColors.bgWhite,
+                    overlayColor: AppColors.bgWhite.withValues(alpha: 0.8),
+                    side: BorderSide(style: BorderStyle.none),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    padding: EdgeInsets.symmetric(vertical: 14),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    spacing: 5,
+                    children: [
+                      Text(
+                        _currentPage < onboardingViewData.length - 1
+                            ? 'Next'
+                            : 'Get Started',
+                        style: TextStyle(fontSize: 16),
+                      ),
+
+                      if (_currentPage < onboardingViewData.length - 1)
+                        // Image.asset(AppAssets.icChevronRight, height: 20,),
+                        Icon(Icons.chevron_right, size: 20),
+                    ],
+                  ),
                 ),
               ),
             ],
